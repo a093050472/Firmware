@@ -92,7 +92,8 @@ public:
 	 * Set the integral term to 0 to prevent windup
 	 * @see _rate_int
 	 */
-	void resetIntegral() { _rate_int.zero(); }
+	void resetIntegral() { _rate_int.zero();
+				zeta.zero(); }
 
 	/**
 	 * Get status message of controller for logging/debugging
@@ -112,6 +113,7 @@ private:
 
 	// States
 	matrix::Vector3f _rate_int; ///< integral term of the rate controller
+	matrix::Vector3f zeta;
 
 	bool _mixer_saturation_positive[3] {};
 	bool _mixer_saturation_negative[3] {};

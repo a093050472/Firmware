@@ -81,14 +81,31 @@ matrix::Vector3f AttitudeControl::update(const Quatf &q) const
 	qd = qd_red * Quatf(cosf(_yaw_w * acosf(q_mix(0))), 0, 0, sinf(_yaw_w * asinf(q_mix(3))));
 
 	// quaternion attitude control law, qe is rotation from q to qd
-	const Quatf qe = q.inversed() * qd;
+	//const Quatf qe = q.inversed() * qd;
 
 	// using sin(alpha/2) scaled rotation axis as attitude error (see quaternion definition by axis angle)
 	// also taking care of the antipodal unit quaternion ambiguity
-	const Vector3f eq = 2.f * qe.canonical().imag();
+	// const Vector3f eq = 2.f * qe.canonical().imag();
+	float M[9]={-10,0,0,0,-10,0,0,0,-10};
+        Matrix3f Rot;
+        Matrix3f Rotd;
+	Matrix3f ER;
+	Matrix3f RotT;
+        Rot=Dcmf(q);
+        Rotd=Dcmf(qd);
+        ER= Rot-Rotd;
+	Matrix3f Mw(M);
+	Matrix3f ERT=ER.transpose();
+	Mw-=ER*ERT;
+        RotT=Rot.transpose();
+        Matrix3f AnV;
+        AnV=RotT * Mw * ER;
 
 	// calculate angular rates setpoint
-	matrix::Vector3f rate_setpoint = eq.emult(_proportional_gain);
+	 matrix::Vector3f rate_setpoint = {AnV(2,1), AnV(0,2), AnV(1,0)};
+	 rate_setpoint = rate_setpoint.emult(_proportional_gain);
+	// matrix::Vector3f rate_setpoint = eq.emult(_proportional_gain);
+
 
 	// Feed forward the yaw setpoint rate.
 	// yawspeed_setpoint is the feed forward commanded rotation around the world z-axis,
