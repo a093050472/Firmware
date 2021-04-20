@@ -185,8 +185,12 @@ rtps:
     id: 86
   - msg: vehicle_attitude
     id: 87
+    receive: true
+    send : true
+
   - msg: vehicle_attitude_setpoint
     id: 88
+    receive: true
   - msg: vehicle_command
     id: 89
     receive: true

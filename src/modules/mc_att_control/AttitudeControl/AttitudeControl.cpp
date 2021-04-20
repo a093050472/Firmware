@@ -86,7 +86,7 @@ matrix::Vector3f AttitudeControl::update(const Quatf &q) const
 	// using sin(alpha/2) scaled rotation axis as attitude error (see quaternion definition by axis angle)
 	// also taking care of the antipodal unit quaternion ambiguity
 	// const Vector3f eq = 2.f * qe.canonical().imag();
-	float M[9]={-10,0,0,0,-10,0,0,0,-10};
+	float M[9]={-_proportional_gain(0)*2,0,0,0,-_proportional_gain(0)*2,0,0,0,-_proportional_gain(0)*2};
         Matrix3f Rot;
         Matrix3f Rotd;
 	Matrix3f ER;
@@ -103,7 +103,6 @@ matrix::Vector3f AttitudeControl::update(const Quatf &q) const
 
 	// calculate angular rates setpoint
 	 matrix::Vector3f rate_setpoint = {AnV(2,1), AnV(0,2), AnV(1,0)};
-	 rate_setpoint = rate_setpoint.emult(_proportional_gain);
 	// matrix::Vector3f rate_setpoint = eq.emult(_proportional_gain);
 
 

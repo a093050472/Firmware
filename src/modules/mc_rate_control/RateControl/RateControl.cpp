@@ -64,10 +64,10 @@ Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, cons
 	// Vector3f rate_error = rate_sp - rate;
 	// Sliding surface
 	Vector3f s = rate - rate_sp;
-	Vector3f dzeta = _gain_p.emult(s*((1/s.norm())+1));
+	Vector3f dzeta = _gain_i.emult(_gain_p.emult(s*((1/s.norm())+1)));
 
 	// PID control with feed forward
-	const Vector3f torque = - _gain_p.emult(s*((1/sqrt(s.norm()))+1)) - zeta;
+	const Vector3f torque = - _gain_i.emult(_gain_p.emult(s*((1/sqrt(s.norm()))+1))) - zeta;
 
 	// update integral only if we are not landed
 	if (!landed) {
